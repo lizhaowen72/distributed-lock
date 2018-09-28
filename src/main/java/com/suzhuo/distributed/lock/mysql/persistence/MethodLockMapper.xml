@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.suzhuo.distributed.lock.mysql.persistence.MethodLockMapper">
+  <resultMap type="com.suzhuo.distributed.lock.mysql.model.MethodLock" id="methodLock">
+    <result property="methodId" column="method_id" />
+    <result property="methodName" column="method_name" />
+    <result property="methodDesc" column="method_desc" />
+    <result property="createTime" column="create_time" />
+    <result property="updateTime" column="update_time" />
+  </resultMap>
+
+	<insert id="insert" parameterType="com.suzhuo.distributed.lock.mysql.model.MethodLock" useGeneratedKeys="true" keyProperty="methodId">
+    	insert into `t_method_lock`(
+    	<trim prefixOverrides=",">
+    		<if test="true">
+    			,`method_id`
+    		</if>
+	    	<if test="methodName != null">
+	    		,`method_name`
+	    	</if>
+	    	<if test="methodDesc != null">
+	    		,`method_desc`
+	    	</if>
+	    	<if test="createTime != null">
+	    		,`create_time`
+	    	</if>
+	    	<if test="updateTime != null">
+	    		,`update_time`
+	    	</if>
+    	</trim>
+    	) values(
+		<trim prefixOverrides=",">
+    		<if test="true">
+    			,#{methodId}
+    		</if>
+	    	<if test="methodName != null">
+    			,#{methodName}
+    		</if>
+	    	<if test="methodDesc != null">
+    			,#{methodDesc}
+    		</if>
+	    	<if test="createTime != null">
+    			,#{createTime}
+    		</if>
+	    	<if test="updateTime != null">
+    			,#{updateTime}
+    		</if>
+    	</trim>
+    	)
+	</insert>
+	<update id="update" parameterType="com.suzhuo.distributed.lock.mysql.model.MethodLock">
+		update `t_method_lock` 
+		<trim prefix="set" prefixOverrides=","> 
+					<if test="methodName !=null">
+						,`method_name` = #{methodName}
+					</if>
+					<if test="methodDesc !=null">
+						,`method_desc` = #{methodDesc}
+					</if>
+					<if test="createTime !=null">
+						,`create_time` = #{createTime}
+					</if>
+					<if test="updateTime !=null">
+						,`update_time` = #{updateTime}
+					</if>
+		</trim>
+		,`updated_time` = now()
+		where `method_id` = #{methodId}
+	</update>
+	<select id="findAll" parameterType="com.suzhuo.distributed.lock.mysql.model.MethodLock" resultMap="methodLock">
+		select * from `t_method_lock`
+	</select>
+	<select id="findById" parameterType="java.lang.Long" resultMap="methodLock">
+		select * from `t_method_lock` where method_id = #{methodId}
+	</select>
+	<delete id="delete" parameterType="java.lang.Long">
+		delete from `t_method_lock` where `method_id` = #{id}
+	</delete>	
+	<select id="find" parameterType="com.suzhuo.distributed.lock.mysql.model.MethodLock" resultMap="methodLock">
+		select * from `t_method_lock`
+		<where>
+				<if test="methodId !=null">
+					and `method_id` = #{methodId} 
+				</if>
+				<if test="methodName !=null">
+					and `method_name` = #{methodName} 
+				</if>
+				<if test="methodDesc !=null">
+					and `method_desc` = #{methodDesc} 
+				</if>
+				<if test="createTime !=null">
+					and `create_time` = #{createTime} 
+				</if>
+				<if test="updateTime !=null">
+					and `update_time` = #{updateTime} 
+				</if>
+		</where>
+	</select>
+</mapper>
